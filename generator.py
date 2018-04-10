@@ -1,7 +1,8 @@
 import json as j
 import re
 from result_data import ResultData
-from googleplaces import GooglePlaces, types, lang
+from GooglePlacesLibPatch import GooglePlaces
+from googleplaces import types, lang, ranking
 from hashTypes import hashTypes
 API_KEY = 'AIzaSyCv3hNhb0HDg8KpxLP0JNqxAPUfUpH-0qU'
 
