@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru" >
+<head>
+	<title>Visualization of data</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+	<script src="https://yandex.st/jquery/2.2.3/jquery.min.js" type="text/javascript"></script>
+	<script src="js/map.js" type="text/javascript" ></script>
+	<script src="js/insta_geo_new.json" type="text/javascript"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+	<div id="header"><h1 align="center">Отображение данных на карте</h1></div>
+	<div id="sidebar">
+		<h3>Возраст</h3>
+		<p>
+			от  
+			<input type="number" name="min_age" value="20" min="18" max="60" step="1"> 
+			до 
+			<input type="number" name="max_age" value="21" min="18" max="60" step="1">
+		</p>
+	
+		<h3>Пол</h3>
+		<select>
+			<option value="1">Мужской</option>
+			<option value="2">Женский</option>
+		</select>
+
+		<h3>Теги</h3>
+		<select>
+			<option>еда</option>
+			<option>развлечения</option>
+			<option>мода-красота</option>
+			<option>ночная жизнь</option>
+			<option>спорт</option>
+			<option>отношения</option>
+			<option>достопримечательности</option>
+			<option>работа</option>
+			<option>учеба</option>
+			<option>увлечения</option>
+			<option>другое</option>
+		</select>
+
+		<p><input type="button" id="findData" value="Найти"/></p>
+	</div>
+
+	<div id="content">
+		<div id="map" style="height: 550px; weight: 300px;"></div>
+	</div>
+</body>
+</html>
