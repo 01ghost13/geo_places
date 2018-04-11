@@ -12,31 +12,26 @@ function init () {
         center: [48.707103, 44.516939], // Волгоград
         zoom: 12
         }),
-        collection = new ymaps.GeoObjectCollection(null, { preset: 'islands#redIcon'});
 
-     document.getElementById('findData').onclick = function () {
-//        var coordinates = [[48.703987, 44.523502],
-//                            [48.760937, 44.542988],
-//                            [48.511863, 44.583832],
-//                            [48.512745, 44.584537],
-//                            [48.559014, 44.440722]];
-//
-//        var places = ["8 причал, Волгоградский речной порт",
-//                      "Парковка",
-//                      "Бистро",
-//                      "Бистро",
-//                      "Строймаг"];
-//
-//        for (var i = 0; i < places.length; i++)
-//            collection.add(new ymaps.Placemark(coordinates[i], {balloonContentHeader: places[i]}));
+    document.getElementById('findData').onclick = function () {
+        collection = new ymaps.GeoObjectCollection(null, { preset: 'islands#redIcon'});
+        var gender = $('#gender_select')[0].value;
+        var min_age = $('#min_age')[0].value;
+        var max_age = $('#max_age')[0].value;
+        var tag_select = $('#tag_select')[0].value;
+        console.log(gender, min_age, max_age, tag_select);
+
         $.getJSON("insta_geo_new.json", function(json) {
             console.log(json.length)
             for(var i = 0; i < json.length; i++) {
-                long_lat = [json[i]['latitude'], json[i]['longitude']]
-                place = json[i]['place']
-                collection.add(new ymaps.Placemark(long_lat, {balloonContentHeader: place}));
+                var rec = json[i];
+                var long_lat = [rec['latitude'], rec['longitude']];
+                var place = rec['place'];
+                if(rec['sex'] == gender && rec['age'] >= min_age && rec['age'] <= max_age && rec['tag'] == tag_select) {
+                    collection.add(new ymaps.Placemark(long_lat, {balloonContentHeader: place}));
+                }
             }
-        });
+    });
 
         myMap.geoObjects.add(collection);
     };
