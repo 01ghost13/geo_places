@@ -1,11 +1,13 @@
 import json as j
 import re
+
+import sys, os
+
 from result_data import ResultData
 from GooglePlacesLibPatch import GooglePlaces
 from googleplaces import types, lang, ranking
 from hashTypes import hashTypes
 import difflib
-
 
 API_KEY = 'AIzaSyCv3hNhb0HDg8KpxLP0JNqxAPUfUpH-0qU'
 
@@ -24,16 +26,24 @@ class Generator:
         object_name = ''
         print_types = lambda x: print("Chosen place types", object_item.types)
 
-        #object PLACES NEAR
+        # object PLACES NEAR
         google = GooglePlaces(API_KEY)
-        query_result = google.nearby_search(
-                    lat_lng={'lat': latitude, 'lng': longitude},
-                    radius=1000,
-                    language=lang.RUSSIAN,
-                    type=types.AC_TYPE_ESTABLISHMENT,
-                    types=types.AC_TYPE_ESTABLISHMENT,
-                    rankby=ranking.DISTANCE
-                )
+
+        i = 0
+        while i < len(hashtags):
+            query_result = google.nearby_search(
+                lat_lng={'lat': latitude, 'lng': longitude},
+                radius=1000,
+                language=lang.RUSSIAN,
+                type=types.AC_TYPE_ESTABLISHMENT,
+                types=types.AC_TYPE_ESTABLISHMENT,
+                rankby=ranking.DISTANCE,
+                keyword=hashtags[i]
+            )
+            if len(query_result.places) > 0:
+                break
+            i += 1
+
         pages = 0
         object_item = None
 
@@ -60,7 +70,7 @@ class Generator:
                     object_item = item
                 if object_item:
                     print_types(item)
-                    return item.name
+                    return item.name, object_item.geo_location["lat"], object_item.geo_location["lng"]
             pages += 1
 
         # choosing the nearest establishment
@@ -76,27 +86,30 @@ class Generator:
             object_name = object_item.name
             print("Nearest place types", object_item.types)
 
-        return object_name
+        return object_name, object_item.geo_location["lat"], object_item.geo_location["lng"]
 
     def process(self, count):
         self.__open__()
         self.target = ResultData()
         steps = min(len(self.source_json), count)
         for i in range(steps):
-            print("\nstep: ", i+1, "\\", steps)
+            print("\nstep: ", i + 1, "\\", steps)
             record = self.source_json[i]
             try:
                 record['hashtag'] = j.loads(record['hashtag'])
-                place = self.__query__(record['longitude'], record['latitude'], record['tag'], record['hashtag'])
+                place, lat, lng = self.__query__(record['longitude'], record['latitude'], record['tag'],
+                                                 record['hashtag'])
                 record['place'] = place
+                record['longitude'] = str(lng)
+                record['latitude'] = str(lat)
                 print("place: ", record['place'])
                 print("original hash tag: ", record["hashtag"])
                 print("tag: ", record["tag"])
-                print("long and lat", record['latitude'], record['longitude'])
+                print("long and lat", lat, lng)
             except Exception as e:
                 print("Got error on step: ", i + 1)
                 print("Error: ", str(e))
-            finally:
+            else:
                 self.target.add_record(record)
 
     def __open__(self):
@@ -106,6 +119,8 @@ class Generator:
         file.close()
 
     def __save__(self):
+        path = os.path.dirname(sys.argv[0])
+        self.target_file = path + "/js/" + self.target_file
         file = open(self.target_file, 'w')
         file.write(j.dumps(self.target.data))
         file.close()

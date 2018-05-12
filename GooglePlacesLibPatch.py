@@ -8,7 +8,7 @@ class GooglePlaces(Gp):
                sensor=False, type=None, types=[], pagetoken=None):
         """Perform a nearby search using the Google Places API.
 
-        One of either location, lat_lng or pagetoken are required, the rest of 
+        One of either location, lat_lng or pagetoken are required, the rest of
         the keyword arguments are optional.
 
         keyword arguments:
@@ -36,8 +36,8 @@ class GooglePlaces(Gp):
                     Places (default []). If there is only one item the request
                     will be send as type param.
         pagetoken-- Optional parameter to force the search result to return the next
-                    20 results from a previously run search. Setting this parameter 
-                    will execute a search with the same parameters used previously. 
+                    20 results from a previously run search. Setting this parameter
+                    will execute a search with the same parameters used previously.
                     (default None)
         """
         if location is None and lat_lng is None and pagetoken is None:

@@ -1,8 +1,9 @@
 from collections import Counter
 
+
 class ResultData:
 
-    def __init__(self,  open_file=None,):
+    def __init__(self, open_file=None, ):
         self.data = []
         if open_file:
             self.file = open_file
